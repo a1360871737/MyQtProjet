@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/BMW_logo_blue.png</file>
+        <file>res/Huawei-logo.png</file>
+        <file>res/bakeground.jpg</file>
+    </qresource>
+</RCC>
