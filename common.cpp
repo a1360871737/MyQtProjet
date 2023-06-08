@@ -1,5 +1,7 @@
 #include "common.h"
 #include <QDebug>
+#include <QFile>
+#include <QFileInfo>
 
 Client::Client(QObject *parent) : QObject(parent)
 {
@@ -43,6 +45,7 @@ void Client::sendMessage(QString message)
 
     qint64 bytes = m_tcpSocket->write(data);
     if (bytes != data.size()) {
+        emit connectERR();
         qWarning() << "Send error: " << bytes << "/" << data.size();
     } else {
         qDebug() << "Send message: " << message;
@@ -98,7 +101,29 @@ void Client::readMessage()
             }
         }
 
-
         qDebug() << "Error";
     }
+}
+
+void Client::sendFile(QString path)
+{
+    QFile file(path);
+    QFileInfo info(path);
+    int fileSize = info.size();
+    QString str = QString::number(fileSize);
+    QString str1 = "sendF:" + str;
+    sendMessage(str1);
+    m_tcpSocket->flush();
+    file.open(QFile::ReadOnly);
+    int num = 0;
+    while(!file.atEnd())
+    {
+        QByteArray line = file.read(1024);
+        m_tcpSocket->write(line);
+        num += line.size();
+    }
+    int percent = 0;
+    percent = (num/fileSize)*100;
+    file.close();
+    return;
 }
