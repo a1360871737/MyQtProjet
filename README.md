@@ -1,0 +1,2 @@
+# MyQtProjet
+ mytest qt project
